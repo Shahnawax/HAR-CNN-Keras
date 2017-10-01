@@ -1,10 +1,17 @@
 ## Human Activity Recognition using CNN in Keras
 This project is to create a small and simple Convolutional Neural Network for Human Activity Recognition using accelerometer sensor data for x, y and z axis.
-
+### Files
+The repository contains
+* Keras implementation of the CNN "HAR.py"
+* The dataset used for training "actitracker_raw.txt"
+* Pretrained model architacture "model.josn"
+* Pretrained model weights "model.h5", and
+* Readme "README.md"
+The classification accuracy of the network is approximately 88%.
 ### Tools Required
 
-Python 2.7 is used during development and following libraries are required to run the code provided in the notebook:
-* Tensorflow
+Python 3.6 is used during development and following libraries are required to run the code provided in the notebook:
+* Keras
 * Numpy
 * Matplotlib
 * Pandas
