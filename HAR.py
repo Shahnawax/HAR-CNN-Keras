@@ -145,46 +145,4 @@ for layer in model.layers:
 model.fit(train_x,train_y, validation_split=0.2,epochs=10,batch_size=10,verbose=2)
 score = model.evaluate(test_x,test_y,verbose=2)
 print('Baseline Error: %.2f%%' %(100-score[1]*100))
-'''
-seperating the dataset we need for the demo
-
-'''
-# find the predictions
-pdct = model.predict(test_x,verbose=0)
-
-#for i in range (pdct.shape[0]):
-indices = np.equal(np.argmax(pdct, axis=1),np.argmax(test_y, axis=1))
-sampleData = np.squeeze(test_x[indices])
-sampleClasses = test_y[indices]
-a = np.zeros(12,1)
-indsForActivities = np.zeros((2,6))
-for i in range(6):
-    temp = np.argwhere(sampleClasses[:,i]==1)
-    a[i*2: i*2+1] =  temp[0:2]
-#test_x()
-
-
-# serialize model to JSON
-model_json = model.to_json()
-with open("model1.json", "w") as json_file:
-    json_file.write(model_json)
-# serialize weights to HDF5
-model.save_weights("model1.h5")
-print("Saved model to disk")
-
-# later...
- 
-# load json and create model
-json_file = open('model.json', 'r')
-loaded_model_json = json_file.read()
-json_file.close()
-loaded_model = model_from_json(loaded_model_json)
-# load weights into new model
-loaded_model.load_weights("model.h5")
-print("Loaded model from disk")
-
-# evaluate loaded model on test data
-loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-score = loaded_model.evaluate(test_x, test_y, verbose=2)
-print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
-
+model.save('model.h5')
