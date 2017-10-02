@@ -4,14 +4,13 @@ This project is to create a small and simple Convolutional Neural Network for Hu
 The repository contains
 * Keras implementation of the CNN "HAR.py"
 * The dataset used for training "actitracker_raw.txt"
-* Pretrained model architacture "model.josn"
-* Pretrained model weights "model.h5", and
+* Pretrained model "model.h5", and
 * Readme "README.md"
 The classification accuracy of the network is approximately 88%.
 ### Tools Required
 
 Python 3.6 is used during development and following libraries are required to run the code provided in the notebook:
-* Keras
+* Keras 2.*
 * Numpy
 * Matplotlib
 * Pandas

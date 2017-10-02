@@ -17,9 +17,9 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from keras.models import Sequential, model_from_json
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
-from keras import backend as K
+#from keras import backend as K
 from keras import optimizers
-K.set_image_dim_ordering('th')
+#K.set_image_dim_ordering('th')
 # setting up a random seed for reproducibility
 random_seed = 611
 np.random.seed(random_seed)
@@ -90,7 +90,7 @@ labels = np.asarray(pd.get_dummies(labels),dtype = np.int8)
 numOfRows = segments.shape[1]
 numOfColumns = segments.shape[2]
 numChannels = 1
-numFilters = 256 # number of filters in Conv2D layer
+numFilters = 128 # number of filters in Conv2D layer
 # kernal size of the Conv2D layer
 kernalSize1 = 2
 # max pooling window size
@@ -109,9 +109,9 @@ num_classes = labels.shape[1]
 # dropout ratio for dropout layer
 dropOutRatio = 0.2
 # reshaping the data for network input
-reshaped_segments = segments.reshape(segments.shape[0], numChannels, numOfRows, numOfColumns)
+reshaped_segments = segments.reshape(segments.shape[0], numOfRows, numOfColumns,1)
 # splitting in training and testing data
-train_split = np.random.rand(len(reshaped_segments)) < 0.7
+train_split = np.random.rand(len(reshaped_segments)) < valSplit
 train_x = reshaped_segments[train_split]
 test_x = reshaped_segments[~train_split]
 train_x = np.nan_to_num(train_x)
@@ -122,7 +122,9 @@ test_y = labels[~train_split]
 def cnn_model():
     model = Sequential()
     # adding the first convolutionial layer with 32 filters and 5 by 5 kernal size, using the rectifier as the activation function
-    model.add(Conv2D(numFilters, (kernalSize1,kernalSize1),input_shape=(1, numOfRows, numOfColumns),activation='relu'))
+    model.add(Conv2D(numFilters, (kernalSize1,kernalSize1),input_shape=(numOfRows, numOfColumns,1),activation='relu'))
+    # adding a maxpooling layer
+    model.add(MaxPooling2D(pool_size=(poolingWindowSz,poolingWindowSz),padding='valid'))
     # adding a dropout layer for the regularization and avoiding over fitting
     model.add(Dropout(dropOutRatio))
     # flattening the output in order to apply the fully connected layer
@@ -140,15 +142,34 @@ def cnn_model():
 model = cnn_model()
 for layer in model.layers:
     print(layer.name)
-model.fit(train_x,train_y,validation_data=(test_x,test_y),epochs=10,batch_size=10,verbose=2)
+model.fit(train_x,train_y, validation_split=0.2,epochs=10,batch_size=10,verbose=2)
 score = model.evaluate(test_x,test_y,verbose=2)
 print('Baseline Error: %.2f%%' %(100-score[1]*100))
+'''
+seperating the dataset we need for the demo
+
+'''
+# find the predictions
+pdct = model.predict(test_x,verbose=0)
+
+#for i in range (pdct.shape[0]):
+indices = np.equal(np.argmax(pdct, axis=1),np.argmax(test_y, axis=1))
+sampleData = np.squeeze(test_x[indices])
+sampleClasses = test_y[indices]
+a = np.zeros(12,1)
+indsForActivities = np.zeros((2,6))
+for i in range(6):
+    temp = np.argwhere(sampleClasses[:,i]==1)
+    a[i*2: i*2+1] =  temp[0:2]
+#test_x()
+
+
 # serialize model to JSON
 model_json = model.to_json()
-with open("model.json", "w") as json_file:
+with open("model1.json", "w") as json_file:
     json_file.write(model_json)
 # serialize weights to HDF5
-model.save_weights("model.h5")
+model.save_weights("model1.h5")
 print("Saved model to disk")
 
 # later...
@@ -166,3 +187,4 @@ print("Loaded model from disk")
 loaded_model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
 score = loaded_model.evaluate(test_x, test_y, verbose=2)
 print("%s: %.2f%%" % (loaded_model.metrics_names[1], score[1]*100))
+
