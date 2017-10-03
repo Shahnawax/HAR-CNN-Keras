@@ -96,7 +96,7 @@ kernalSize1 = 2
 # max pooling window size
 poolingWindowSz = 2
 # number of filters in fully connected layers
-numNueronsFCL1 = 256
+numNueronsFCL1 = 128
 numNueronsFCL2 = 128
 # split ratio for test and validation
 valSplit = 0.8
