@@ -99,27 +99,27 @@ poolingWindowSz = 2
 numNueronsFCL1 = 128
 numNueronsFCL2 = 128
 # split ratio for test and validation
-valSplit = 0.8
+trainSplitRatio = 0.8
 # number of epochs
 Epochs = 10
 # batchsize
-batchSize = 128
+batchSize = 10
 # number of total clases
-num_classes = labels.shape[1]
+numClasses = labels.shape[1]
 # dropout ratio for dropout layer
 dropOutRatio = 0.2
 # reshaping the data for network input
-reshaped_segments = segments.reshape(segments.shape[0], numOfRows, numOfColumns,1)
+reshapedSegments = segments.reshape(segments.shape[0], numOfRows, numOfColumns,1)
 # splitting in training and testing data
-train_split = np.random.rand(len(reshaped_segments)) < valSplit
-train_x = reshaped_segments[train_split]
-test_x = reshaped_segments[~train_split]
-train_x = np.nan_to_num(train_x)
-test_x = np.nan_to_num(test_x)
-train_y = labels[train_split]
-test_y = labels[~train_split]
+trainSplit = np.random.rand(len(reshapedSegments)) < trainSplitRatio
+trainX = reshapedSegments[trainSplit]
+testX = reshapedSegments[~trainSplit]
+trainX = np.nan_to_num(trainX)
+testX = np.nan_to_num(testX)
+trainY = labels[trainSplit]
+testY = labels[~trainSplit]
 
-def cnn_model():
+def cnnModel():
     model = Sequential()
     # adding the first convolutionial layer with 32 filters and 5 by 5 kernal size, using the rectifier as the activation function
     model.add(Conv2D(numFilters, (kernalSize1,kernalSize1),input_shape=(numOfRows, numOfColumns,1),activation='relu'))
@@ -134,17 +134,17 @@ def cnn_model():
     #adding second fully connected layer 128 outputs
     model.add(Dense(numNueronsFCL2, activation='relu'))
     # adding softmax layer for the classification
-    model.add(Dense(num_classes, activation='softmax'))
+    model.add(Dense(numClasses, activation='softmax'))
     # Compiling the model to generate a model
     adam = optimizers.Adam(lr = 0.001, decay=1e-6)
     model.compile(loss='categorical_crossentropy', optimizer=adam, metrics=['accuracy'])
     return model
-model = cnn_model()
+model = cnnModel()
 for layer in model.layers:
     print(layer.name)
-model.fit(train_x,train_y, validation_split=0.2,epochs=10,batch_size=10,verbose=2)
-score = model.evaluate(test_x,test_y,verbose=2)
+model.fit(trainX,trainY, validation_split=1-trainSplitRatio,epochs=10,batch_size=batchSize,verbose=2)
+score = model.evaluate(testX,testY,verbose=2)
 print('Baseline Error: %.2f%%' %(100-score[1]*100))
 model.save('model.h5')
-np.save('groundTruth.npy',test_y)
-np.save('testData.npy',test_x)
+np.save('groundTruth.npy',testY)
+np.save('testData.npy',testX)
