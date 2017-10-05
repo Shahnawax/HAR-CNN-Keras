@@ -2,11 +2,14 @@
 This project is to create a small and simple Convolutional Neural Network for Human Activity Recognition using accelerometer sensor data for x, y and z axis.
 ### Files
 The repository contains
-* Keras implementation of the CNN "HAR.py"
-* The dataset used for training "actitracker_raw.txt"
-* Pretrained model "model.h5", and
-* Readme "README.md"
-The classification accuracy of the network is approximately 88%.
+* "HAR.py", containing the Keras network implementation of the CNN for Human Activity Recognition.
+* "actitracker_raw.txt", the dataset used for this experiment,
+* "model.h5", a pretrained model on the training data.
+* "evaluate_model.py" containing the evaluation script. This script evaluates the performance of the pretrained netowrk. 
+* Testing data used for the evaluation of the model. "testData.npy",
+* Ground truth values for the testData outputs as "groundTruth.npy" and
+* "README.md"
+The classification accuracy of the network is approximately 92%.
 ### Tools Required
 
 Python 3.6 is used during development and following libraries are required to run the code provided in the notebook:
@@ -14,11 +17,14 @@ Python 3.6 is used during development and following libraries are required to ru
 * Numpy
 * Matplotlib
 * Pandas
+* sklearn
 
 ### Dataset
 
 The dataset we used for this project was released by Wireless Sensor Data Mining (WISDM) Lab and can be found on this [[link]](http://www.cis.fordham.edu/wisdm/dataset.php)
-
+### Evaluation
+A network is created using the topology in "HAR.py" and trained on 80% of the data. To evaluate the performance of this network, we write a script "evaluate_model.py". This script uses the 20% of random samples in the dataset and tests the pretrained cnn model "model.h5". This reports the percentage of the wrong predictions as error and creates a confusion matrix. The results shows that the network has an accuracy of 92.1 %. The confusion matrix is shown below
+![alt text](https://raw.githubusercontent.com/Shahnawax/HAR-CNN-Keras/master/confusion_matrix.png)
 ### Related Problem
 
 User identification from walking activity. Accelerometer dataset from 22 indivduals can be downloaded from the following [[link]](http://archive.ics.uci.edu/ml/datasets/User+Identification+From+Walking+Activity)

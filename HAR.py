@@ -146,3 +146,5 @@ model.fit(train_x,train_y, validation_split=0.2,epochs=10,batch_size=10,verbose=
 score = model.evaluate(test_x,test_y,verbose=2)
 print('Baseline Error: %.2f%%' %(100-score[1]*100))
 model.save('model.h5')
+np.save('groundTruth.npy',test_y)
+np.save('testData.npy',test_x)
