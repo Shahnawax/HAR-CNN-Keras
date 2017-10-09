@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
-from keras.models import Sequential, model_from_json
+from keras.models import Sequential
 from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Dropout
 #from keras import backend as K
 from keras import optimizers
@@ -27,11 +27,7 @@ np.random.seed(random_seed)
 # matplotlib inline
 plt.style.use('ggplot')
 # defining function for loading the dataset
-def readData(filePath):
-    # attributes of the dataset
-    columnNames = ['user_id','activity','timestamp','x-axis','y-axis','z-axis']
-    data = pd.read_csv(filePath,header = None, names=columnNames,na_values=';')
-    return data
+
 # defining a function for feature normalization
 # (feature - mean)/stdiv
 def featureNormalize(dataset):
@@ -76,6 +72,7 @@ def segment_signal(data, window_size = 90):
     return segments, labels
 ''' Main Code '''
 # # # # # # # # #   reading the data   # # # # # # # # # # 
+# Path of file #
 dataset = readData('/home/shahnawaz/Documents/HAR/actitracker_raw.txt')
 # plotting a subset of the data to visualize
 for activity in np.unique(dataset['activity']):

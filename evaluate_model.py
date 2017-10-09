@@ -12,32 +12,39 @@ from keras.models import load_model
 import numpy as np
 from sklearn import metrics
 import matplotlib.pyplot as plt
+import os
 # defining a function for plotting the confusion matrix
 # takes cmNormalized
-def plot_cm(cM, lables,title):
+os.environ['QT_PLUGIN_PATH'] = ''
+def plot_cm(cM, labels,title):
     # normalizing the confusionMatrix for showing the probabilities
-    cmNormalized = cM/cM.sum(axis=1)[:,None]
+    cmNormalized = np.round((cM/cM.sum(axis=1)[:,None])*100).astype(int)
     # creating a figure object
     fig = plt.figure()
     # plotting the confusion matrix
     plt.imshow(cmNormalized,interpolation=None,cmap = plt.cm.Blues)
     # creating a color bar and setting the limits
     plt.colorbar()
-    plt.clim(0,1)
+    plt.clim(0,100)
     # assiging the title, x and y labels
     plt.xlabel('Predicted Values')
     plt.ylabel('Ground Truth')
-    plt.title(title)
+    plt.title(title + '\n%age confidence')
     # defining the ticks for the x and y axis
     plt.xticks(range(len(labels)),labels,rotation = 60)
-    plt.yticks(range(len(lables)),labels)
+    plt.yticks(range(len(labels)),labels)
     # number of occurences in the boxes
     width, height = cM.shape 
+    print('Accuracy for each class is given below.')
     for predicted in range(width):
         for real in range(height):
+            color = 'black'
+            if(predicted == real):
+                color = 'white'
+                print(labels[predicted].ljust(12)+ ':', cmNormalized[predicted,real] , '%')
             plt.gca().annotate(
-                    '{:d}'.format(int(cM[predicted,real])),xy=(real, predicted),
-                    horizontalalignment = 'center',verticalalignment = 'center')
+                    '{:d}'.format(int(cmNormalized[predicted,real])),xy=(real, predicted),
+                    horizontalalignment = 'center',verticalalignment = 'center',color = color)
     # making sure that the figure is not clipped
     plt.tight_layout()
     # saving the figure
