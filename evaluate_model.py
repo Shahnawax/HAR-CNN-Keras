@@ -18,7 +18,7 @@ import os
 os.environ['QT_PLUGIN_PATH'] = ''
 def plot_cm(cM, labels,title):
     # normalizing the confusionMatrix for showing the probabilities
-    cmNormalized = np.round((cM/cM.sum(axis=1)[:,None])*100).astype(int)
+    cmNormalized = np.around((cM/cM.sum(axis=1)[:,None])*100,2)
     # creating a figure object
     fig = plt.figure()
     # plotting the confusion matrix
