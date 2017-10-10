@@ -27,7 +27,11 @@ np.random.seed(random_seed)
 # matplotlib inline
 plt.style.use('ggplot')
 # defining function for loading the dataset
-
+def readData(filePath):
+    # attributes of the dataset
+    columnNames = ['user_id','activity','timestamp','x-axis','y-axis','z-axis']
+    data = pd.read_csv(filePath,header = None, names=columnNames,na_values=';')
+    return data
 # defining a function for feature normalization
 # (feature - mean)/stdiv
 def featureNormalize(dataset):

@@ -41,7 +41,7 @@ def plot_cm(cM, labels,title):
             color = 'black'
             if(predicted == real):
                 color = 'white'
-                print(labels[predicted].ljust(12)+ ':', cmNormalized[predicted,real] , '%')
+                print(labels[predicted].ljust(12)+ ':', cmNormalized[predicted,real], '%')
             plt.gca().annotate(
                     '{:d}'.format(int(cmNormalized[predicted,real])),xy=(real, predicted),
                     horizontalalignment = 'center',verticalalignment = 'center',color = color)
